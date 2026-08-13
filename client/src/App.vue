@@ -310,6 +310,13 @@ body {
 .app-layout.sidebar-collapsed .brand-name {
   opacity: 0;
   pointer-events: none;
+  width: 0;
+  overflow: hidden;
+}
+
+.app-layout.sidebar-collapsed .sidebar-brand {
+  justify-content: center;
+  gap: 0;
 }
 
 /* ── Sidebar Nav ── */
@@ -374,6 +381,31 @@ body {
 .app-layout.sidebar-collapsed .nav-label {
   opacity: 0;
   pointer-events: none;
+  width: 0;
+  overflow: hidden;
+}
+
+.app-layout.sidebar-collapsed .sidebar-nav a {
+  justify-content: center;
+  padding: 0.5rem;
+  gap: 0;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer {
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer .language-label,
+.app-layout.sidebar-collapsed .sidebar-footer .profile-name,
+.app-layout.sidebar-collapsed .sidebar-footer .chevron {
+  display: none;
+}
+
+.app-layout.sidebar-collapsed .sidebar-footer .language-button,
+.app-layout.sidebar-collapsed .sidebar-footer .profile-button {
+  justify-content: center;
+  padding: 0.5rem;
 }
 
 /* ── Sidebar Footer ── */

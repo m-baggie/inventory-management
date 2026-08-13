@@ -1,5 +1,50 @@
 <template>
   <div class="orders">
+    <!-- Submitted Restocking Orders -->
+    <div class="card restocking-card">
+      <div class="card-header">
+        <h3 class="card-title">Submitted Restocking Orders</h3>
+      </div>
+      <div v-if="restockingLoading" class="loading">Loading...</div>
+      <div v-else-if="restockingOrders.length === 0" class="empty-state">
+        No restocking orders have been submitted yet.
+      </div>
+      <div v-else class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Items</th>
+              <th>Status</th>
+              <th>Order Date</th>
+              <th>Expected Delivery</th>
+              <th class="text-right">Total Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="order in restockingOrders" :key="order.id">
+              <td><strong>{{ order.id }}</strong></td>
+              <td>
+                <details class="items-details">
+                  <summary class="items-summary">{{ order.items.length }} item{{ order.items.length !== 1 ? 's' : '' }}</summary>
+                  <div class="items-dropdown">
+                    <div v-for="(item, idx) in order.items" :key="idx" class="item-entry">
+                      <span class="item-name">{{ item.name }}</span>
+                      <span class="item-meta">Qty: {{ item.quantity }} @ ${{ item.unit_cost.toFixed(2) }}</span>
+                    </div>
+                  </div>
+                </details>
+              </td>
+              <td><span class="badge info">Restocking</span></td>
+              <td>{{ formatDate(order.order_date) }}</td>
+              <td>{{ formatDate(order.expected_delivery) }}</td>
+              <td class="text-right"><strong>${{ order.total_value.toLocaleString() }}</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="page-header">
       <h2>{{ t('orders.title') }}</h2>
       <p>{{ t('orders.description') }}</p>
@@ -95,6 +140,19 @@ export default {
     const loading = ref(true)
     const error = ref(null)
     const orders = ref([])
+    const restockingOrders = ref([])
+    const restockingLoading = ref(false)
+
+    const loadRestockingOrders = async () => {
+      try {
+        restockingLoading.value = true
+        restockingOrders.value = await api.getRestockingOrders()
+      } catch (err) {
+        console.error('Failed to load restocking orders:', err)
+      } finally {
+        restockingLoading.value = false
+      }
+    }
 
     // Use shared filters
     const {
@@ -153,13 +211,18 @@ export default {
       })
     }
 
-    onMounted(loadOrders)
+    onMounted(() => {
+      loadOrders()
+      loadRestockingOrders()
+    })
 
     return {
       t,
       loading,
       error,
       orders,
+      restockingOrders,
+      restockingLoading,
       getOrdersByStatus,
       getOrderStatusClass,
       formatDate,
@@ -172,6 +235,20 @@ export default {
 </script>
 
 <style scoped>
+.restocking-card {
+  margin-bottom: 1.5rem;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+  color: #64748b;
+}
+
 /* Fixed table layout to prevent column shifting */
 .orders-table {
   table-layout: fixed;

@@ -91,39 +91,43 @@ const selectLanguage = (locale) => {
 <style scoped>
 .language-switcher {
   position: relative;
+  width: 100%;
 }
 
 .language-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.875rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 0.5rem 0.625rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease;
   font-family: inherit;
-  font-size: 0.875rem;
-  color: #334155;
+  font-size: 0.813rem;
+  color: #64748b;
+  width: 100%;
+  text-align: left;
 }
 
 .language-button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: #1e293b;
+  color: #cbd5e1;
 }
 
 .globe-icon {
-  color: #64748b;
+  color: inherit;
   flex-shrink: 0;
 }
 
 .language-label {
   font-weight: 500;
+  flex: 1;
 }
 
 .chevron {
-  color: #64748b;
+  color: inherit;
   transition: transform 0.2s ease;
   flex-shrink: 0;
 }
@@ -134,9 +138,10 @@ const selectLanguage = (locale) => {
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  min-width: 160px;
+  bottom: calc(100% + 0.5rem);
+  top: auto;
+  left: 0;
+  min-width: 220px;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 10px;

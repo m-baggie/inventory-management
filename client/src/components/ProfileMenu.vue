@@ -118,30 +118,36 @@ const handleLogout = () => {
 <style scoped>
 .profile-menu {
   position: relative;
+  width: 100%;
 }
 
 .profile-button {
   display: flex;
   align-items: center;
   gap: 0.625rem;
-  padding: 0.5rem 0.875rem;
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  padding: 0.5rem 0.625rem;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease;
   font-family: inherit;
+  width: 100%;
+  text-align: left;
+  color: #64748b;
 }
 
 .profile-button:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+  background: #1e293b;
+  color: #cbd5e1;
 }
 
 .avatar {
   width: 32px;
   height: 32px;
+  min-width: 32px;
   border-radius: 50%;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
   color: white;
   display: flex;
@@ -153,14 +159,20 @@ const handleLogout = () => {
 }
 
 .profile-name {
-  font-size: 0.875rem;
+  font-size: 0.813rem;
   font-weight: 500;
-  color: #0f172a;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
 }
 
 .chevron {
-  color: #64748b;
+  color: inherit;
   transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .chevron-open {
@@ -169,9 +181,10 @@ const handleLogout = () => {
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
-  right: 0;
-  min-width: 280px;
+  bottom: calc(100% + 0.5rem);
+  top: auto;
+  left: 0;
+  min-width: 220px;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 10px;

@@ -1,6 +1,37 @@
 <template>
   <div class="app-layout" :class="{ 'sidebar-collapsed': sidebarCollapsed, 'sidebar-transitioning': sidebarTransitioning }">
-    <!-- Left sidebar -->
+
+    <!-- TOP NAV: visible only on large screens via CSS -->
+    <header class="top-nav">
+      <div class="nav-container">
+        <div class="logo">
+          <div class="brand-icon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <path d="M8.186 1.113a.5.5 0 00-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.24v7.922l6.5 2.6z"/>
+            </svg>
+          </div>
+          <h1>{{ t('nav.companyName') }}</h1>
+          <span class="subtitle">{{ t('nav.subtitle') }}</span>
+        </div>
+        <nav class="nav-tabs">
+          <router-link to="/" :class="{ active: $route.path === '/' }">{{ t('nav.overview') }}</router-link>
+          <router-link to="/inventory" :class="{ active: $route.path === '/inventory' }">{{ t('nav.inventory') }}</router-link>
+          <router-link to="/orders" :class="{ active: $route.path === '/orders' }">{{ t('nav.orders') }}</router-link>
+          <router-link to="/spending" :class="{ active: $route.path === '/spending' }">{{ t('nav.finance') }}</router-link>
+          <router-link to="/demand" :class="{ active: $route.path === '/demand' }">{{ t('nav.demandForecast') }}</router-link>
+          <router-link to="/reports" :class="{ active: $route.path === '/reports' }">Reports</router-link>
+          <router-link to="/restocking" :class="{ active: $route.path === '/restocking' }">{{ t('nav.restocking') }}</router-link>
+          <router-link to="/backlog" :class="{ active: $route.path === '/backlog' }">Backlog</router-link>
+        </nav>
+        <LanguageSwitcher />
+        <ProfileMenu
+          @show-profile-details="showProfileDetails = true"
+          @show-tasks="showTasks = true"
+        />
+      </div>
+    </header>
+
+    <!-- SIDEBAR: visible only on small screens via CSS -->
     <aside class="sidebar" @transitionend="onSidebarTransitionEnd">
       <!-- Header: logo + brand -->
       <div class="sidebar-header">
@@ -93,7 +124,7 @@
       </button>
     </aside>
 
-    <!-- Main content area -->
+    <!-- CONTENT AREA: always visible -->
     <div class="content-area">
       <FilterBar />
       <main class="main-content">
@@ -255,19 +286,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Large screen defaults (>1024px): column layout with top nav ── */
 .app-layout {
   display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background: #f8fafc;
 }
 
-/* ── Sidebar ── */
+/* Sidebar hidden on large screens */
 .sidebar {
   width: 220px;
   min-height: 100vh;
   background: #0d1117;
   border-right: 1px solid #1e293b;
-  display: flex;
+  display: none;
   flex-direction: column;
   position: sticky;
   top: 0;
@@ -285,6 +318,119 @@ body {
   overflow: hidden;
 }
 
+/* Top nav visible on large screens */
+.top-nav {
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+}
+
+.nav-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 2rem;
+  height: 70px;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-right: auto;
+}
+
+.logo .brand-icon {
+  width: 28px;
+  height: 28px;
+  background: #3b82f6;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white;
+}
+
+.logo .brand-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.logo h1 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+}
+
+.subtitle {
+  font-size: 0.813rem;
+  color: #64748b;
+  font-weight: 400;
+  padding-left: 0.75rem;
+  border-left: 1px solid #e2e8f0;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin-right: 1rem;
+}
+
+.nav-tabs a {
+  padding: 0.5rem 0.875rem;
+  color: #64748b;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.nav-tabs a:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.nav-tabs a.active,
+.nav-tabs a.router-link-exact-active {
+  color: #2563eb;
+  background: #eff6ff;
+}
+
+/* Content area: full width on large screens (no sidebar) */
+.content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem 2rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── FilterBar sticky: sticks below the 70px top nav on large screens ── */
+.filters-bar {
+  position: sticky;
+  top: 70px;
+  z-index: 90;
+}
+
+/* ── Sidebar internals (unchanged) ── */
 .sidebar-header {
   padding: 1.25rem 1rem;
   border-bottom: 1px solid #1e293b;
@@ -479,19 +625,45 @@ body {
   transform: rotate(180deg);
 }
 
-/* ── Content Area ── */
-.content-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  overflow: hidden;
-}
+/* ── Small screens (≤1024px): switch to sidebar layout ── */
+@media (max-width: 1024px) {
+  /* Switch to row layout */
+  .app-layout {
+    flex-direction: row;
+  }
 
-.main-content {
-  flex: 1;
-  padding: 1.5rem 2rem;
-  overflow-y: auto;
+  /* Hide top nav */
+  .top-nav {
+    display: none;
+  }
+
+  /* Show sidebar */
+  .sidebar {
+    display: flex;
+  }
+
+  /* Remove max-width on main content so it fills available space */
+  .main-content {
+    max-width: none;
+    margin: 0;
+  }
+
+  /* FilterBar: not sticky on small screens */
+  .filters-bar {
+    position: relative;
+    top: auto;
+    z-index: auto;
+  }
+
+  /* Auto-collapse sidebar to icon-only on small screens unless user expanded it */
+  .app-layout:not(.sidebar-collapsed) .sidebar {
+    width: 56px;
+  }
+  .app-layout:not(.sidebar-collapsed) .nav-label,
+  .app-layout:not(.sidebar-collapsed) .brand-name {
+    opacity: 0;
+    pointer-events: none;
+  }
 }
 
 /* ── Page Header ── */
@@ -689,18 +861,6 @@ tbody tr:hover {
 .badge.low {
   background: #dbeafe;
   color: #1e40af;
-}
-
-/* ── Responsive: auto-collapse sidebar below 1024px ── */
-@media (max-width: 1024px) {
-  .app-layout:not(.sidebar-collapsed) .sidebar {
-    width: 56px;
-  }
-  .app-layout:not(.sidebar-collapsed) .nav-label,
-  .app-layout:not(.sidebar-collapsed) .brand-name {
-    opacity: 0;
-    pointer-events: none;
-  }
 }
 
 /* ── States ── */

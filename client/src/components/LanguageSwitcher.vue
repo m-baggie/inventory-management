@@ -123,6 +123,7 @@ const selectLanguage = (locale) => {
 
 .language-label {
   font-weight: 500;
+  flex: 1;
 }
 
 .chevron {

@@ -145,7 +145,9 @@ const handleLogout = () => {
 .avatar {
   width: 32px;
   height: 32px;
+  min-width: 32px;
   border-radius: 50%;
+  flex-shrink: 0;
   background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
   color: white;
   display: flex;

@@ -1,7 +1,7 @@
 <template>
-  <div class="app-layout" :class="{ 'sidebar-collapsed': sidebarCollapsed }">
+  <div class="app-layout" :class="{ 'sidebar-collapsed': sidebarCollapsed, 'sidebar-transitioning': sidebarTransitioning }">
     <!-- Left sidebar -->
-    <aside class="sidebar">
+    <aside class="sidebar" @transitionend="onSidebarTransitionEnd">
       <!-- Header: logo + brand -->
       <div class="sidebar-header">
         <div class="sidebar-brand">
@@ -138,6 +138,7 @@ export default {
     const showTasks = ref(false)
     const apiTasks = ref([])
     const sidebarCollapsed = ref(false)
+    const sidebarTransitioning = ref(false)
 
     // Merge mock tasks from currentUser with API tasks
     const tasks = computed(() => {
@@ -205,7 +206,12 @@ export default {
     }
 
     const toggleSidebar = () => {
+      sidebarTransitioning.value = true
       sidebarCollapsed.value = !sidebarCollapsed.value
+    }
+
+    const onSidebarTransitionEnd = () => {
+      sidebarTransitioning.value = false
     }
 
     onMounted(loadTasks)
@@ -219,7 +225,9 @@ export default {
       deleteTask,
       toggleTask,
       sidebarCollapsed,
-      toggleSidebar
+      sidebarTransitioning,
+      toggleSidebar,
+      onSidebarTransitionEnd
     }
   }
 }
@@ -260,11 +268,14 @@ body {
   flex-shrink: 0;
   transition: width 0.2s ease;
   z-index: 100;
-  overflow: hidden;
 }
 
 .app-layout.sidebar-collapsed .sidebar {
   width: 56px;
+}
+
+.app-layout.sidebar-transitioning .sidebar {
+  overflow: hidden;
 }
 
 .sidebar-header {

@@ -1,0 +1,411 @@
+<title>Deal Desk Swarm</title>
+<style>
+  :root {
+    --bg:        #F4F0E8;
+    --surface:   #FFFFFF;
+    --border:    #DDD8CC;
+    --tp:        #161C2D;
+    --ts:        #5C6478;
+    --accent:    #B8840A;
+    --tag-bg:    #EDE8DC;
+    --tag-text:  #7A6020;
+    --co-fill:   #161C2D;
+    --co-text:   #F4F0E8;
+    --ff-d: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    --ff-b: 'Trebuchet MS', 'Helvetica Neue', Arial, system-ui, sans-serif;
+    --ff-m: 'SF Mono', Menlo, Consolas, 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:       #131726;
+      --surface:  #1C2137;
+      --border:   #2A3050;
+      --tp:       #EBEEF5;
+      --ts:       #8A95B0;
+      --accent:   #E5A916;
+      --tag-bg:   #252B40;
+      --tag-text: #CBA832;
+      --co-fill:  #E5A916;
+      --co-text:  #131726;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:       #131726;
+    --surface:  #1C2137;
+    --border:   #2A3050;
+    --tp:       #EBEEF5;
+    --ts:       #8A95B0;
+    --accent:   #E5A916;
+    --tag-bg:   #252B40;
+    --tag-text: #CBA832;
+    --co-fill:  #E5A916;
+    --co-text:  #131726;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--tp);
+    font-family: var(--ff-b);
+    font-size: 14px;
+    line-height: 1.6;
+    padding-bottom: 64px;
+  }
+
+  /* Header */
+  header {
+    padding: 32px 48px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .eyebrow {
+    font-family: var(--ff-m);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  h1 {
+    font-family: var(--ff-d);
+    font-size: clamp(26px, 3.5vw, 38px);
+    font-weight: 700;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .sub {
+    margin-top: 6px;
+    font-size: 13px;
+    color: var(--ts);
+    max-width: 56ch;
+  }
+  .badge {
+    flex-shrink: 0;
+    background: var(--co-fill);
+    color: var(--co-text);
+    font-family: var(--ff-m);
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Layout */
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 48px; }
+
+  .section-label {
+    font-family: var(--ff-m);
+    font-size: 9.5px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ts);
+    padding-top: 40px;
+    margin-bottom: 14px;
+  }
+
+  /* Diagram */
+  .diagram-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px 20px 24px;
+    overflow-x: auto;
+  }
+  .diagram-wrap svg { display: block; width: 100%; height: auto; min-width: 620px; }
+
+  /* SVG tokens via CSS */
+  .s-box      { fill: var(--surface); stroke: var(--border); stroke-width: 1.5; }
+  .s-spec     { fill: var(--surface); stroke: var(--accent); stroke-width: 1.5; }
+  .s-coord    { fill: var(--co-fill); }
+  .s-line     { stroke: var(--accent); stroke-width: 1.5; fill: none; opacity: 0.7; }
+  .s-arrowhead{ fill: var(--accent); }
+  .s-tp       { fill: var(--tp); }
+  .s-ts       { fill: var(--ts); }
+  .s-ta       { fill: var(--accent); }
+  .s-ct       { fill: var(--co-text); }
+
+  /* Two-column */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 22px 24px;
+  }
+  .card h3 {
+    font-family: var(--ff-d);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-wrap: balance;
+  }
+  .card p { font-size: 13px; color: var(--ts); line-height: 1.65; }
+  .card ul { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .card li {
+    font-size: 13px;
+    color: var(--ts);
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .card li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+  code { font-family: var(--ff-m); font-size: 11.5px; color: var(--accent); }
+
+  /* Principles row */
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 16px; }
+
+  .principle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    padding: 18px 20px;
+  }
+  .principle .num {
+    font-family: var(--ff-m);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .principle h4 {
+    font-family: var(--ff-d);
+    font-size: 14.5px;
+    font-weight: 700;
+    margin-bottom: 7px;
+    text-wrap: balance;
+    line-height: 1.2;
+  }
+  .principle p { font-size: 12.5px; color: var(--ts); line-height: 1.6; }
+  .principle .eg {
+    margin-top: 8px;
+    background: var(--tag-bg);
+    padding: 8px 10px;
+    font-family: var(--ff-m);
+    font-size: 11px;
+    color: var(--tag-text);
+    line-height: 1.5;
+  }
+
+  /* Checklist */
+  .checklist {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    margin-top: 16px;
+    padding: 20px 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 40px;
+  }
+  .check-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--ts);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.45;
+  }
+  .check-item .box {
+    flex-shrink: 0;
+    width: 13px;
+    height: 13px;
+    border: 1.5px solid var(--border);
+    margin-top: 2px;
+  }
+
+  /* Files bar */
+  .files-bar {
+    margin-top: 32px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    background: var(--surface);
+    padding: 16px 24px;
+    display: flex;
+    gap: 44px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .file-item { display: flex; flex-direction: column; gap: 3px; }
+  .fl { font-family: var(--ff-m); font-size: 9px; letter-spacing: 0.13em; text-transform: uppercase; color: var(--ts); }
+  .fv { font-family: var(--ff-m); font-size: 12.5px; color: var(--accent); font-weight: 500; }
+  .fv.neutral { color: var(--ts); }
+
+  /* Responsive */
+  @media (max-width: 860px) {
+    .principles { grid-template-columns: 1fr 1fr; }
+    .checklist { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 640px) {
+    header { flex-direction: column; align-items: flex-start; padding: 24px 24px 18px; }
+    .wrap { padding: 0 24px; }
+    .two-col { grid-template-columns: 1fr; }
+    .principles { grid-template-columns: 1fr; }
+  }
+</style>
+
+<header>
+  <div>
+    <div class="eyebrow">Day 2 Hackathon — Option A</div>
+    <h1>Deal Desk Swarm</h1>
+    <p class="sub">Build a multi-agent swarm that reads an RFP and generates a branded proposal — then demo it live.</p>
+  </div>
+  <div class="badge">STARTER CODE WIRED</div>
+</header>
+
+<div class="wrap">
+
+  <div class="section-label">Architecture — How the swarm routes and synthesises</div>
+  <div class="diagram-wrap">
+    <svg viewBox="0 0 900 396" xmlns="http://www.w3.org/2000/svg"
+         style="font-family: 'Trebuchet MS', Arial, sans-serif;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" class="s-arrowhead"/>
+        </marker>
+      </defs>
+
+      <!-- Input -->
+      <rect x="305" y="8" width="290" height="48" class="s-box"/>
+      <text x="450" y="27" text-anchor="middle" font-size="9" class="s-ts"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.12em">TRIGGER FILE</text>
+      <text x="450" y="46" text-anchor="middle" font-size="12" class="s-tp" font-weight="600">synthetic-data/rfp-acme-corp.md</text>
+
+      <line x1="450" y1="56" x2="450" y2="93" class="s-line" marker-end="url(#arr)"/>
+
+      <!-- Coordinator -->
+      <rect x="265" y="96" width="370" height="62" class="s-coord"/>
+      <text x="450" y="117" text-anchor="middle" font-size="9" class="s-ct" opacity="0.6"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.12em">COORDINATOR</text>
+      <text x="450" y="143" text-anchor="middle" font-size="14.5" class="s-ct" font-weight="700"
+            font-family="'Palatino Linotype', Palatino, Georgia, serif">Senior Partner — Deal Desk Lead</text>
+
+      <!-- Fan-out -->
+      <line x1="450" y1="158" x2="132" y2="214" class="s-line" marker-end="url(#arr)"/>
+      <line x1="450" y1="158" x2="328" y2="214" class="s-line" marker-end="url(#arr)"/>
+      <line x1="450" y1="158" x2="572" y2="214" class="s-line" marker-end="url(#arr)"/>
+      <line x1="450" y1="158" x2="768" y2="214" class="s-line" marker-end="url(#arr)"/>
+
+      <!-- Specialist 1 -->
+      <rect x="42" y="216" width="180" height="64" class="s-spec"/>
+      <text x="132" y="237" text-anchor="middle" font-size="8.5" class="s-ta"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.07em">pricing-playbook</text>
+      <text x="132" y="256" text-anchor="middle" font-size="12.5" class="s-tp" font-weight="600">Pricing</text>
+      <text x="132" y="271" text-anchor="middle" font-size="11" class="s-ts">Specialist</text>
+
+      <!-- Specialist 2 -->
+      <rect x="238" y="216" width="180" height="64" class="s-spec"/>
+      <text x="328" y="237" text-anchor="middle" font-size="8.5" class="s-ta"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.07em">legal-checklist</text>
+      <text x="328" y="256" text-anchor="middle" font-size="12.5" class="s-tp" font-weight="600">Legal</text>
+      <text x="328" y="271" text-anchor="middle" font-size="11" class="s-ts">Reviewer</text>
+
+      <!-- Specialist 3 -->
+      <rect x="482" y="216" width="180" height="64" class="s-spec"/>
+      <text x="572" y="237" text-anchor="middle" font-size="8.5" class="s-ta"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.07em">product-overview</text>
+      <text x="572" y="256" text-anchor="middle" font-size="12.5" class="s-tp" font-weight="600">Technical Fit</text>
+      <text x="572" y="271" text-anchor="middle" font-size="11" class="s-ts">Assessor</text>
+
+      <!-- Specialist 4 -->
+      <rect x="678" y="216" width="180" height="64" class="s-spec"/>
+      <text x="768" y="237" text-anchor="middle" font-size="8.5" class="s-ta"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.07em">competitive-intel</text>
+      <text x="768" y="256" text-anchor="middle" font-size="12.5" class="s-tp" font-weight="600">Competitive</text>
+      <text x="768" y="271" text-anchor="middle" font-size="11" class="s-ts">Intel</text>
+
+      <!-- Converge -->
+      <line x1="132" y1="280" x2="450" y2="330" class="s-line" marker-end="url(#arr)"/>
+      <line x1="328" y1="280" x2="450" y2="330" class="s-line" marker-end="url(#arr)"/>
+      <line x1="572" y1="280" x2="450" y2="330" class="s-line" marker-end="url(#arr)"/>
+      <line x1="768" y1="280" x2="450" y2="330" class="s-line" marker-end="url(#arr)"/>
+
+      <!-- Output -->
+      <rect x="295" y="332" width="310" height="52" class="s-box"/>
+      <text x="450" y="351" text-anchor="middle" font-size="9" class="s-ts"
+            font-family="'SF Mono', Menlo, monospace" letter-spacing="0.12em">DELIVERABLE</text>
+      <text x="450" y="372" text-anchor="middle" font-size="12.5" class="s-tp" font-weight="600">outputs/proposal-response.docx</text>
+    </svg>
+  </div>
+
+  <!-- The ask + demo path -->
+  <div class="two-col">
+    <div class="card">
+      <h3>The Ask</h3>
+      <ul>
+        <li>Acme Corp sends an RFP for an enterprise data platform — read it in <code>synthetic-data/rfp-acme-corp.md</code></li>
+        <li>The coordinator parses the RFP, routes to four specialist agents, and synthesises a proposal doc</li>
+        <li>Each specialist owns a lane: pricing, legal risk, technical fit, competitive positioning</li>
+        <li>Output lands at <code>outputs/proposal-response.docx</code></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Demo Path</h3>
+      <ul>
+        <li>Run <code>python run_deal_desk.py</code> — coordinator + specialists fire in sequence</li>
+        <li>Watch the transcript: show the coordinator routing decisions in real time</li>
+        <li>Open the output docx — walk through each specialist's contribution</li>
+        <li>Swap a specialist's skill file, re-run, show how the proposal changes</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Principles from today's notes -->
+  <div class="section-label">Build principles — from today's workshop</div>
+  <div class="principles">
+    <div class="principle">
+      <div class="num">LAYER 1 — SYSTEM PROMPT</div>
+      <h4>Name the Role and Domain Explicitly</h4>
+      <p>A generic "helpful assistant" prompt fails. Each specialist needs its role, the RFP context, and its exact lane stated up front.</p>
+      <div class="eg">Good: "You are the Pricing Specialist for a deal desk at an enterprise software firm. You receive RFP excerpts and decide commercial terms."</div>
+    </div>
+    <div class="principle">
+      <div class="num">LAYER 2 — TOOL SPECS</div>
+      <h4>Tool Descriptions Are Claude's Interface</h4>
+      <p>Vague names cause wrong calls. List what the tool does, when to use it, and valid inputs — proactively, without waiting to be asked.</p>
+      <div class="eg">Add to prompt: "Use your tools proactively — don't ask the user for information you can look up yourself."</div>
+    </div>
+    <div class="principle">
+      <div class="num">LAYER 3 — IMPLEMENTATIONS</div>
+      <h4>Return Helpful Errors, Not Exceptions</h4>
+      <p>When a tool raises a bare exception, the agent is stuck. Return a message that tells the model what went wrong and what to try instead.</p>
+      <div class="eg">catalog.get(key, f"Not found. Available: {', '.join(catalog.keys())}")</div>
+    </div>
+  </div>
+
+  <!-- Pre-ship checklist -->
+  <div class="section-label">Pre-demo checklist</div>
+  <div class="checklist">
+    <div class="check-item"><div class="box"></div>System prompt names each specialist's role and domain</div>
+    <div class="check-item"><div class="box"></div>Tool descriptions list valid inputs and say "use proactively"</div>
+    <div class="check-item"><div class="box"></div>Tool implementations return helpful errors, not bare exceptions</div>
+    <div class="check-item"><div class="box"></div>Coordinator routing logic tested against the Acme Corp RFP</div>
+    <div class="check-item"><div class="box"></div>Output docx opens and reads as a coherent proposal</div>
+    <div class="check-item"><div class="box"></div>Swap one skill file → re-run → show the diff in the output</div>
+  </div>
+
+  <!-- Files -->
+  <div class="files-bar">
+    <div class="file-item">
+      <span class="fl">Trigger</span>
+      <span class="fv">synthetic-data/rfp-acme-corp.md</span>
+    </div>
+    <div class="file-item">
+      <span class="fl">Run</span>
+      <span class="fv">python run_deal_desk.py</span>
+    </div>
+    <div class="file-item">
+      <span class="fl">Output</span>
+      <span class="fv">outputs/proposal-response.docx</span>
+    </div>
+    <div class="file-item">
+      <span class="fl">Status</span>
+      <span class="fv neutral">Starter code wired — build &amp; demo</span>
+    </div>
+  </div>
+
+</div>
